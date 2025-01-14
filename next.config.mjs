@@ -1,6 +1,10 @@
-/** @type {import('next').NextConfig} */
-const nextConfig = {
-    transpilePackages: ['xterm', 'xterm-addon-fit', 'xterm-addon-web-links'],
-  }
-  
-export default nextConfig;
+const config = {
+  output: 'export',
+  basePath: '/InstanceHub',
+  images: {
+    unoptimized: true
+  },
+  assetPrefix: '/InstanceHub/'
+}
+
+export default config

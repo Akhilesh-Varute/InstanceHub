@@ -7,8 +7,7 @@ import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/com
 import { Badge } from "@/components/ui/badge";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Activity, Power, PowerOff, Server, Clock, Info, RefreshCw, Terminal } from 'lucide-react';
-import EC2Terminal from '../components/EC2Terminal';
+import { Activity, Power, PowerOff, Server, Clock, Info, RefreshCw } from 'lucide-react';
 
 export default function Home() {
   const [instances, setInstances] = useState([]);
@@ -16,11 +15,8 @@ export default function Home() {
   const [error, setError] = useState(null);
   const [logs, setLogs] = useState([]);
   const [refreshing, setRefreshing] = useState(false);
-  const [selectedInstanceId, setSelectedInstanceId] = useState('');
-  const [terminalOpen, setTerminalOpen] = useState(false);
   const [searchTerm, setSearchTerm] = useState('');
 
-  // Keep existing functions (addLog, fetchInstances, handleInstanceAction)
   const addLog = (message, type = 'info') => {
     const timestamp = new Date().toISOString();
     setLogs(prevLogs => [{
@@ -188,10 +184,6 @@ export default function Home() {
               <Server className="w-4 h-4" />
               Instances
             </TabsTrigger>
-            <TabsTrigger value="terminal" className="flex items-center gap-2">
-              <Terminal className="w-4 h-4" />
-              Terminal
-            </TabsTrigger>
             <TabsTrigger value="logs" className="flex items-center gap-2">
               <Activity className="w-4 h-4" />
               Activity Logs
@@ -250,57 +242,6 @@ export default function Home() {
                 </Card>
               ))}
             </div>
-          </TabsContent>
-
-          <TabsContent value="terminal">
-            <Card className="bg-white/50 backdrop-blur-sm">
-              <CardHeader>
-                <CardTitle>Terminal Connection</CardTitle>
-                <CardDescription>Connect to your EC2 instances via SSH</CardDescription>
-              </CardHeader>
-              <CardContent>
-                {instances.length > 0 ? (
-                  <div className="space-y-4">
-                    <div className="flex gap-2 items-center">
-                      <select
-                        className="p-2 border rounded-lg bg-white/50 backdrop-blur-sm"
-                        value={selectedInstanceId || ''}
-                        onChange={(e) => setSelectedInstanceId(e.target.value)}
-                      >
-                        <option value="">Select an instance</option>
-                        {instances
-                          .filter(instance => instance.state === 'running')
-                          .map(instance => (
-                            <option key={instance.id} value={instance.id}>
-                              {instance.name} ({instance.id})
-                            </option>
-                          ))}
-                      </select>
-                      <Button
-                        onClick={() => setTerminalOpen(true)}
-                        disabled={!selectedInstanceId}
-                        className="flex items-center gap-2"
-                      >
-                        <Terminal className="w-4 h-4" />
-                        Connect
-                      </Button>
-                    </div>
-                    
-                    {selectedInstanceId && terminalOpen && (
-                      <EC2Terminal
-                        instanceId={selectedInstanceId}
-                        isOpen={terminalOpen}
-                        onClose={() => setTerminalOpen(false)}
-                      />
-                    )}
-                  </div>
-                ) : (
-                  <div className="text-center py-4 text-slate-500">
-                    No running instances available
-                  </div>
-                )}
-              </CardContent>
-            </Card>
           </TabsContent>
 
           <TabsContent value="logs">
